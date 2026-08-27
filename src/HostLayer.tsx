@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, setupApiListeners, store } from '@mboa/core';
+import { getPersistor, setupApiListeners, store } from '@mboa/core';
 
 import { MboaRuntimeProvider, type HostRuntimeOptions } from './runtime/MboaRuntimeContext';
 
@@ -29,7 +29,7 @@ export function HostLayer({ children, runtime, loading = null }: HostLayerProps)
 
   return (
     <Provider store={store}>
-      <PersistGate loading={loading} persistor={persistor}>
+      <PersistGate loading={loading} persistor={getPersistor()}>
         <MboaRuntimeProvider options={runtime}>{children}</MboaRuntimeProvider>
       </PersistGate>
     </Provider>
