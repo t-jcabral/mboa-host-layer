@@ -8,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 import {
-  addPersistedKey,
   getMboaConfig,
   injectReducer,
   useAppDispatch,
@@ -17,7 +16,7 @@ import {
   type MiniAppManifest,
 } from '@mboa/core';
 
-import { miniAppLifecycle } from '../lifecycle/miniAppLifecycle';
+import { registerMiniApp } from './registerMiniApp';
 import { MiniAppRuntimeLoader } from '../loader/MiniAppRuntimeLoader';
 import { createManifestSource } from '../loader/manifestSource';
 import type { FederationAdapter } from '../loader/federation/types';
@@ -124,16 +123,8 @@ export function MboaRuntimeProvider({ children, options }: MboaRuntimeProviderPr
             onFallback: (reason) =>
               console.warn(`[mboa] using compiled-in manifest: ${reason}`),
           }),
-          onRegister: (definition) => {
-            // A Mini-App owns its state; the Host installs it into the shared store.
-            for (const key of definition.persistedReducerKeys ?? []) {
-              addPersistedKey(key);
-            }
-            for (const [key, reducer] of Object.entries(definition.reducers ?? {})) {
-              injectReducer(key, reducer);
-            }
-            miniAppLifecycle.registered(definition);
-          },
+          // A Mini-App owns its state; the Host installs it into the shared store.
+          onRegister: registerMiniApp,
           logger: {
             info: (message, meta) => console.log(`[mboa-runtime] ${message}`, meta ?? ''),
             warn: (message, meta) => console.warn(`[mboa-runtime] ${message}`, meta ?? ''),

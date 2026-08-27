@@ -1,5 +1,6 @@
 export { HostLayer, type HostLayerProps } from './HostLayer';
 
+export { registerMiniApp } from './runtime/registerMiniApp';
 export {
   MboaRuntimeProvider,
   useMboaRuntime,
