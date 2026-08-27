@@ -12,16 +12,16 @@ export interface HostLayerProps {
    * Redux, persistence and auth still run, but no registry is resolved.
    */
   runtime?: HostRuntimeOptions;
-  /** Rendered while the store rehydrates and auth bootstrap is in flight. */
+  /** Rendered while the persisted store rehydrates. */
   loading?: React.ReactNode;
 }
 
 /**
  * Mini App Runtime.
  *
- * Owns Redux, PersistGate, auth bootstrap, the Runtime Loader, the lifecycle
- * manager and the shared runtime context. It deliberately owns no
- * application-specific navigation -- that belongs to the Root Stack Mini-App.
+ * Owns Redux, PersistGate, the Runtime Loader, the lifecycle manager and the
+ * shared runtime context. It deliberately owns no application-specific
+ * navigation -- that belongs to the Root Stack Mini-App.
  */
 export function HostLayer({ children, runtime, loading = null }: HostLayerProps) {
   // Scoped to the Host's lifetime so the listeners are torn down with it.
@@ -30,9 +30,7 @@ export function HostLayer({ children, runtime, loading = null }: HostLayerProps)
   return (
     <Provider store={store}>
       <PersistGate loading={loading} persistor={persistor}>
-        <MboaRuntimeProvider options={runtime} fallback={loading}>
-          {children}
-        </MboaRuntimeProvider>
+        <MboaRuntimeProvider options={runtime}>{children}</MboaRuntimeProvider>
       </PersistGate>
     </Provider>
   );

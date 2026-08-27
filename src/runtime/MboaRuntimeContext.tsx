@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import {
   addPersistedKey,
-  bootstrapAuth,
   getMboaConfig,
   injectReducer,
   useAppDispatch,
@@ -35,8 +34,6 @@ export interface HostRuntimeOptions {
   adapters: FederationAdapter[];
   /** Compiled-in manifest used when the Command Center is unreachable. */
   fallbackManifest: MiniAppManifest;
-  /** Skip auth bootstrap -- used by standalone Mini-App test hosts. */
-  skipAuthBootstrap?: boolean;
 }
 
 export interface MboaRuntimeValue {
@@ -62,22 +59,16 @@ export function useMboaRuntime(): MboaRuntimeValue {
 export interface MboaRuntimeProviderProps {
   children: React.ReactNode;
   options?: HostRuntimeOptions;
-  /** Rendered while auth bootstrap is still in flight. */
-  fallback?: React.ReactNode;
 }
 
 /**
  * Shared Runtime Context.
  *
- * Runs auth bootstrap, then drives the Runtime Loader and exposes the resulting
- * Mini-App registry. Without `options` it stays inert, which is what a
- * standalone Mini-App test host wants.
+ * Drives the Runtime Loader and exposes the resulting Mini-App registry.
+ * Without `options` it stays inert, which is what a standalone Mini-App test
+ * host wants.
  */
-export function MboaRuntimeProvider({
-  children,
-  options,
-  fallback = null,
-}: MboaRuntimeProviderProps) {
+export function MboaRuntimeProvider({ children, options }: MboaRuntimeProviderProps) {
   const dispatch = useAppDispatch();
   const config = getMboaConfig();
 
@@ -86,9 +77,6 @@ export function MboaRuntimeProvider({
   const [status, setStatus] = useState<MboaRuntimeValue['status']>('idle');
   const [error, setError] = useState<string | undefined>();
   const [reloadToken, setReloadToken] = useState(0);
-  // Gates children until a session exists, so the first Mini-App query is not
-  // fired unauthenticated and rejected with a 401.
-  const [authSettled, setAuthSettled] = useState(false);
 
   // Runtime telemetry lives in Redux, so it is injected before the first load.
   const runtimeSliceInjected = useRef(false);
@@ -108,17 +96,6 @@ export function MboaRuntimeProvider({
       dispatch(bootstrapStarted({ hostRuntimeVersion: config.hostRuntimeVersion }));
 
       try {
-        // Auth bootstrap is a Host responsibility and runs whether or not a
-        // registry is configured -- a standalone Mini-App test host still needs
-        // a session token for the shared API clients.
-        if (!options?.skipAuthBootstrap) {
-          await dispatch(bootstrapAuth())
-            .unwrap()
-            .catch(() => undefined);
-        }
-        if (cancelled) return;
-        setAuthSettled(true);
-
         // No runtime options means no registry to resolve: the standalone test
         // host mounts a Mini-App stack directly.
         if (!options) {
@@ -203,8 +180,6 @@ export function MboaRuntimeProvider({
   );
 
   return (
-    <MboaRuntimeContext.Provider value={value}>
-      {authSettled ? children : fallback}
-    </MboaRuntimeContext.Provider>
+    <MboaRuntimeContext.Provider value={value}>{children}</MboaRuntimeContext.Provider>
   );
 }
