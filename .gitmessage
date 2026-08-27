@@ -1,0 +1,8 @@
+# <feat|fix|hotfix|chore>:<TICKET-123>:<title (max 72 chars)>
+#
+# (blank line, then a required description)
+#
+# Example:
+#   feat:MBOA-142:add booking cancellation flow
+#
+#   Adds the cancellation endpoint wiring and the confirm dialog.

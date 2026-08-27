@@ -1,0 +1,21 @@
+{
+  "name": "@mboa/host-layer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini App Runtime: Redux provider, persistence, auth bootstrap, runtime loader and lifecycle.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@mboa/core": "1.0.0"
+  },
+  "peerDependencies": {
+    "@reduxjs/toolkit": ">=2",
+    "react": ">=18",
+    "react-native": ">=0.76",
+    "react-redux": ">=9",
+    "redux-persist": ">=6"
+  }
+}

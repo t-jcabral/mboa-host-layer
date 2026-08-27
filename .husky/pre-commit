@@ -1,0 +1,2 @@
+echo "mboa pre-commit: format + lint staged files"
+npx --no-install lint-staged

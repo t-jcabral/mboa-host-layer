@@ -1,0 +1,10 @@
+echo "mboa pre-push: branch naming policy"
+sh scripts/git/verify-branch-name.sh || exit 1
+
+# Cross-repo verification runs when this repo sits inside the MBOA dev workspace.
+if [ -f "../../package.json" ] && grep -q '"workspaces"' ../../package.json 2>/dev/null; then
+  echo "mboa pre-push: workspace-wide verification (typecheck, lint, format, tests)"
+  (cd ../.. && npm run verify) || exit 1
+else
+  echo "mboa pre-push: standalone clone detected — skipping workspace verification"
+fi
