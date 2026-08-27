@@ -7,3 +7,4 @@ package-lock.json
 *.tsbuildinfo
 *.png
 assets/
+.yalc/
