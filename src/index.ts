@@ -3,6 +3,7 @@ export { HostLayer, type HostLayerProps } from './HostLayer';
 export {
   MboaRuntimeProvider,
   useMboaRuntime,
+  useMiniAppFlags,
   type HostRuntimeOptions,
   type MboaRuntimeValue,
 } from './runtime/MboaRuntimeContext';
@@ -35,6 +36,15 @@ export {
   type MiniAppContainer,
   type StaticFederationAdapterOptions,
 } from './loader/federation/staticFederationAdapter';
+export {
+  createWebAppAdapter,
+  type WebAppAdapterOptions,
+} from './loader/federation/webAppAdapter';
+export {
+  createWebMiniAppComponent,
+  type WebViewComponent,
+  type WebViewLikeProps,
+} from './web/WebMiniAppContainer';
 export {
   createRepackFederationAdapter,
   type RepackFederationAdapterOptions,

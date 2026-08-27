@@ -56,6 +56,17 @@ export function useMboaRuntime(): MboaRuntimeValue {
   return value;
 }
 
+/**
+ * The Command Center's feature flags for one Mini-App.
+ *
+ * Standalone harnesses have no registry, so callers destructure with their own
+ * defaults: `const { showRatings = true } = useMiniAppFlags('marketplace')`.
+ */
+export function useMiniAppFlags(miniAppId: string): Record<string, boolean> {
+  const { miniApps } = useMboaRuntime();
+  return miniApps.find((app) => app.id === miniAppId)?.flags ?? {};
+}
+
 export interface MboaRuntimeProviderProps {
   children: React.ReactNode;
   options?: HostRuntimeOptions;
