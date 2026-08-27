@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.expo/
+coverage/
+.husky/_/
+package-lock.json
+*.tsbuildinfo
+*.png
+assets/
