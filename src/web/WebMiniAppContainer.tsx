@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, type ComponentType } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { MiniAppManifestEntry } from '@mboa/core';
+import type { MiniAppComponentProps, MiniAppManifestEntry } from '@mboa/core';
 
 /**
  * The slice of `react-native-webview` the container needs. Injected by the
@@ -40,15 +40,18 @@ const originOf = (url: string): string => {
 export function createWebMiniAppComponent(
   entry: MiniAppManifestEntry,
   WebView: WebViewComponent,
-): ComponentType {
+): ComponentType<MiniAppComponentProps> {
   const webUrl = entry.webUrl ?? '';
   const origin = originOf(webUrl);
 
-  const injected = `
+  function WebMiniApp({ metaData }: MiniAppComponentProps) {
+    // Host-provided runtime metaData rides the bridge into the page.
+    const injected = `
     window.MBOA = {
       miniAppId: ${JSON.stringify(entry.id)},
       version: ${JSON.stringify(entry.version)},
       flags: ${JSON.stringify(entry.flags ?? {})},
+      metaData: ${JSON.stringify(metaData ?? null)},
       postMessage: function (type, payload) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: type, payload: payload }));
       },
@@ -56,7 +59,6 @@ export function createWebMiniAppComponent(
     true;
   `;
 
-  function WebMiniApp() {
     const [lastMessage, setLastMessage] = useState<string>('waiting for the web app…');
 
     const onMessage = useCallback((event: { nativeEvent: { data: string } }) => {
