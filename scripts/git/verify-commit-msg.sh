@@ -55,7 +55,7 @@ esac
 [ -n "$SUBJECT" ] || fail "empty commit message"
 
 printf '%s' "$SUBJECT" | grep -Eq '^(feat|fix|hotfix|chore):[A-Z][A-Z0-9]*-[0-9]+:.+$' \
-  || fail "subject '\''$SUBJECT'\'' does not match <type>:<ticket>:<title>"
+  || fail "subject '$SUBJECT' does not match <type>:<ticket>:<title>"
 
 TITLE=$(printf '%s' "$SUBJECT" | cut -d: -f3-)
 [ ${#TITLE} -le 72 ] || fail "title is ${#TITLE} chars (max 72)"
