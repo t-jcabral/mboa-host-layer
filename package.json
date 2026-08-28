@@ -25,7 +25,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@mboa/api": "file:.yalc/@mboa/api",
     "@mboa/core": "file:.yalc/@mboa/core",
     "@reduxjs/toolkit": "^2.12.0",
     "@types/react": "~19.2.2",
